@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 from pathlib import Path
 from fpdf import FPDF
-from PyPDF2 import PdfReader, PdfWriter
+from PyPDF2 import PdfReader, PdfWriter, PdfMerger
 
 def get_file_name(file_path):
     return Path(file_path).stem
@@ -32,16 +32,44 @@ def splitting_pdf(file_path, page_no):
     with open(output_filename, 'wb') as out:
         pdf_writer.write(out)
 
-    print('Created: {}'.format(output_filename))
+    print(f'Created: {output_filename}')
+
+def merging_pdf(file_paths):
+    pdf_merger = PdfMerger()
+    fname = ''
+
+    for i, file_path in enumerate(file_paths):
+        with open(file_path, 'rb') as pdf:
+            pdf_merger.append(pdf)
+            fname += get_file_name(file_path) + " + "
+
+    output_filename = f"merged_{fname}.pdf"
+
+    with open(output_filename, 'wb') as out:
+        pdf_merger.write(out)
+
+    print(f'Merged: {output_filename}')
 
 def select_file_and_action(action):
     file_path = filedialog.askopenfilename(title="Select File", filetypes=[("Text files, Pdf files", "*.txt *.pdf")])
     if file_path:
-        if action == "convert":
-            convert_file(file_path)
-        elif action == "split":
+        if action == "split":
             page_no = int(entry.get())
             splitting_pdf(file_path, page_no)
+
+def select_multiple_files(action):
+    file_paths = filedialog.askopenfilenames(title="Select Files", filetypes=[("Text files, Pdf files", "*.txt *.pdf")])
+    if file_paths == None or file_paths == []:
+        raise ImportError("Files were not imported, try again!")
+    
+    for file_path in file_paths:
+        if action == "convert":
+            convert_file(file_path)
+
+    if action == "merge":
+        if len(file_paths) <= 1:
+            raise ValueError("Can't merge a single file, select more than one to continue!")
+        merging_pdf(file_paths)
 
 def center_window(window, width, height):
     screen_width = window.winfo_screenwidth()
@@ -55,15 +83,18 @@ def center_window(window, width, height):
 def main():
     root = tk.Tk()
     root.title("File Converter")
-    root.resizable(False, False)  # Disable resizing
+    root.resizable(False, False)  
 
     center_window(root, 300, 300)
 
-    convert_button = tk.Button(root, text="Convert Text to PDF", command=lambda: select_file_and_action("convert"))
+    convert_button = tk.Button(root, text="Convert Text to PDF", command=lambda: select_multiple_files("convert"))
     convert_button.pack(pady=10)
 
     split_button = tk.Button(root, text="Split PDF", command=lambda: select_file_and_action("split"))
     split_button.pack(pady=10)
+
+    merge_button = tk.Button(root, text="Merge PDFs", command=lambda: select_multiple_files("merge"))
+    merge_button.pack(pady=10)
 
     global entry
     entry_label = tk.Label(root, text="Enter number of pages:")
