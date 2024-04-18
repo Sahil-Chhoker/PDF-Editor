@@ -7,6 +7,7 @@ from PyPDF2 import PdfReader, PdfWriter
 def get_file_name(file_path):
     return Path(file_path).stem
 
+# ? : Converting text files to pdf 
 def convert_file(file_path):
     pdf = FPDF()
     pdf.add_page()
@@ -20,6 +21,7 @@ def convert_file(file_path):
         
     pdf.output(f"{fname}.pdf")
 
+# ? : Splitting pdf from start to page_no
 def splitting_pdf(file_path, page_no):
     fname = get_file_name(file_path)
     pdf = PdfReader(file_path)
@@ -38,10 +40,12 @@ def splitting_pdf(file_path, page_no):
 
     print('Created: {}'.format(output_filename))
 
+
 def select_file():
     file_path = filedialog.askopenfilename(title="Select Text File", filetypes=[("Text files, Pdf files", "*.txt, *.pdf")])
     if file_path:
         splitting_pdf(file_path, 3)
+
 
 def main():
     root = tk.Tk()
