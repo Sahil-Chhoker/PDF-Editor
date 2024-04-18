@@ -9,14 +9,12 @@ def convert_file(file_path):
 
     name = ''
     with open(file_path, 'r') as file:
-        name = file.name
+        name = Path(file.name).stem
         for text in file:
             pdf.set_font("Arial", size=10)
             pdf.multi_cell(w=0, h=10, txt=text, align="L")
         
-    pdf.output(f"result.pdf")
-    print(name)
-            
+    pdf.output(f"{name}.pdf")
 
 def select_file():
     file_path = filedialog.askopenfilename(title="Select Text File", filetypes=[("Text files", "*.txt")])
