@@ -1,20 +1,36 @@
+import tkinter as tk
+from tkinter import filedialog
 from pathlib import Path
 from fpdf import FPDF
 
-def convert_file(file):
+def convert_file(file_path):
     pdf = FPDF()
     pdf.add_page()
 
-    for text in file:
-        if len(text) <= 20:
-            pdf.set_font("Arial", "B", size=18)
-            pdf.cell(w=200, h=10, txt=text, ln=1, align="C")
-        else:
-            pdf.set_font("Arial", size=15)
-            pdf.multi_cell(w=0, h=10, txt=text,align="L")
-    pdf.output("result.pdf")
+    name = ''
+    with open(file_path, 'r') as file:
+        name = file.name
+        for text in file:
+            pdf.set_font("Arial", size=10)
+            pdf.multi_cell(w=0, h=10, txt=text, align="L")
+        
+    pdf.output(f"result.pdf")
+    print(name)
+            
+
+def select_file():
+    file_path = filedialog.askopenfilename(title="Select Text File", filetypes=[("Text files", "*.txt")])
+    if file_path:
+        convert_file(file_path)
+
+def main():
+    root = tk.Tk()
+    root.title("Text to PDF Converter")
+
+    button = tk.Button(root, text="Select Text File", command=select_file)
+    button.pack(pady=20)
+
+    root.mainloop()
 
 if __name__ == "__main__":
-    text_file = Path("C:/MASTER FOLDER/GitHub/PDF-Editor/test/BIODIVERSITY.txt")
-    with open(text_file, 'r') as file:
-        convert_file(file)
+    main()
