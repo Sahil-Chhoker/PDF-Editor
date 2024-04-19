@@ -61,6 +61,59 @@ CLIENT_ID=your_client_id_here
 CLIENT_SECRET=your_client_secret_here
 ```
 
+### Python Not Installed?
+If someone doesn't have Python installed, they'll need to install it before they can run the script. Here are instructions for installing Python:
+
+#### Installing Python
+
+1. **Windows:**
+   - Visit the official Python website: [python.org](https://www.python.org/downloads/).
+   - Download the latest version of Python for Windows.
+   - Run the downloaded installer.
+   - During installation, make sure to check the box that says "Add Python to PATH" to easily run Python from the command line.
+   - Follow the installation prompts, and Python will be installed on your system.
+
+2. **macOS:**
+   - macOS typically comes with Python pre-installed. However, it's recommended to install the latest version using the following steps:
+     - Install Homebrew if you haven't already. Open Terminal and run:
+       ```bash
+       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+       ```
+     - Once Homebrew is installed, install Python by running:
+       ```bash
+       brew install python
+       ```
+
+3. **Linux:**
+   - Python is often pre-installed on Linux distributions. If not, you can install it using your package manager. For example:
+     - On Debian/Ubuntu:
+       ```bash
+       sudo apt update
+       sudo apt install python3
+       ```
+     - On Fedora:
+       ```bash
+       sudo dnf install python3
+       ```
+
+#### Verifying Python Installation
+
+After installing Python, you can verify the installation by opening a terminal/command prompt and running:
+
+```bash
+python --version
+```
+
+or
+
+```bash
+python3 --version
+```
+
+This should display the installed Python version.
+
+Once Python is installed, follow the setup instructions provided for the PDF Editor script. If you encounter any issues during installation or setup, feel free to ask for assistance!
+
 ## Usage
 
 1. Run the script by executing `python main.py` in your terminal.
