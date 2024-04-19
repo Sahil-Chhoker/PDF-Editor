@@ -1,5 +1,3 @@
-Here's an improved version of the README file with some additional information and formatting improvements:
-
 # File Converter Tool
 
 This Python script provides a graphical user interface (GUI) for performing various operations on text and PDF files. It allows users to convert text files to PDF, split PDFs, merge PDFs, convert PDFs to images, and convert PDFs to PowerPoint presentations.
