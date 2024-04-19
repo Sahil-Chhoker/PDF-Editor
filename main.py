@@ -3,6 +3,7 @@ from tkinter import filedialog
 from pathlib import Path
 from fpdf import FPDF
 from PyPDF2 import PdfReader, PdfWriter, PdfMerger
+from pdf2image import convert_from_path
 
 def get_file_name(file_path):
     return Path(file_path).stem
@@ -50,12 +51,24 @@ def merging_pdf(file_paths):
 
     print(f'Merged: {output_filename}')
 
+def convert_to_image(file_path, output_path):
+    fname = get_file_name(file_path)
+    poppler_path = 'C:/MASTER FOLDER/poppler-24.02.0/Library/bin'
+    images = convert_from_path(file_path, poppler_path=poppler_path)
+    for i, image in enumerate(images):
+        image.save(f'{output_path}/{fname}_page_{i - 1}.jpg', 'JPEG')
+
+    print(f'Images saved to {output_path}')
+
 def select_file_and_action(action):
     file_path = filedialog.askopenfilename(title="Select File", filetypes=[("Text files, Pdf files", "*.txt *.pdf")])
     if file_path:
         if action == "split":
             page_no = int(entry.get())
             splitting_pdf(file_path, page_no)
+        elif action == "convert_to_image":
+            output_path = filedialog.askdirectory(title="Select Output Directory")
+            convert_to_image(file_path, output_path)
 
 def select_multiple_files(action):
     file_paths = filedialog.askopenfilenames(title="Select Files", filetypes=[("Text files, Pdf files", "*.txt *.pdf")])
@@ -95,6 +108,9 @@ def main():
 
     merge_button = tk.Button(root, text="Merge PDFs", command=lambda: select_multiple_files("merge"))
     merge_button.pack(pady=10)
+
+    convert_to_img_button = tk.Button(root, text="Convert PDF to Images", command=lambda: select_file_and_action("convert_to_image"))
+    convert_to_img_button.pack(pady=10)
 
     global entry
     entry_label = tk.Label(root, text="Enter number of pages:")
