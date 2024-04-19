@@ -30,22 +30,29 @@ Ensure you have the following dependencies installed:
 1. Clone this repository to your local machine.
 
 ```bash
-git clone https://github.com/your-username/file-converter-tool.git
+git clone https://github.com/Sahil-Chhoker/PDF-Editor.git
 ```
 
-2. Navigate to the project directory.
+2. Create a virtual environment (optional but recommended).
+
+```bash
+python -m venv env
+source env/bin/activate  # On Windows, use `env\Scripts\activate.ps1`
+```
+
+3. Navigate to the project directory.
 
 ```bash
 cd PDF-Editor
 ```
 
-3. Install the required dependencies using pip.
+4. Install the required dependencies using pip.
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Set up environment variables for authentication with the GroupDocs API. Create a `.env` file in the root directory of the project and add your client ID and client secret. (For more information on getting your credentials, visit https://dashboard.groupdocs.cloud/)
+5. Set up environment variables for authentication with the GroupDocs API. Create a `.env` file in the root directory of the project and add your client ID and client secret. (For more information on getting your credentials, visit https://dashboard.groupdocs.cloud/)
 
 ```
 CLIENT_ID=your_client_id_here

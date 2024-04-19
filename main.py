@@ -116,7 +116,7 @@ def center_window(window, width, height):
 
 def main():
     root = tk.Tk()
-    root.title("File Converter")
+    root.title("PDF Editor")
     root.resizable(False, False)  
 
     center_window(root, 300, 300)
