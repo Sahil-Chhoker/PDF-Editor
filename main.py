@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import groupdocs_conversion_cloud
 
 load_dotenv()
+# ?: Using GroupDocs Cloud Service API Here
 client_id = os.getenv('CLIENT_ID')
 client_secret = os.getenv('CLIENT_SECRET')
 
@@ -17,7 +18,8 @@ client_secret = os.getenv('CLIENT_SECRET')
 def get_file_name(file_path):
     return Path(file_path).stem
 
-def convert_file(file_path):
+
+def convert_txtfile_to_pdf(file_path):
     pdf = FPDF()
     pdf.add_page()
 
@@ -28,6 +30,7 @@ def convert_file(file_path):
             pdf.multi_cell(w=0, h=10, txt=text, align="L")
         
     pdf.output(f"{fname}.pdf")
+
 
 def splitting_pdf(file_path, page_no):
     fname = get_file_name(file_path)
@@ -43,6 +46,7 @@ def splitting_pdf(file_path, page_no):
         pdf_writer.write(out)
 
     print(f'Created: {output_filename}')
+
 
 def merging_pdf(file_paths):
     pdf_merger = PdfMerger()
@@ -60,6 +64,7 @@ def merging_pdf(file_paths):
 
     print(f'Merged: {output_filename}')
 
+
 def convert_to_image(file_path, output_path):
     fname = get_file_name(file_path)
     poppler_path = 'C:/MASTER FOLDER/poppler-24.02.0/Library/bin'
@@ -69,6 +74,7 @@ def convert_to_image(file_path, output_path):
 
     print(f'Images saved to {output_path}')
 
+
 def convert_to_ppt(file_path, output_path):
     api = groupdocs_conversion_cloud.ConvertApi.from_keys(client_id, client_secret)
 
@@ -77,6 +83,7 @@ def convert_to_ppt(file_path, output_path):
     response = api.convert_document_direct(request)
     shutil.move(response, output_path)
     print(f'Converted PowerPoint saved to {output_path}')
+
 
 def select_file_and_action(action):
     file_path = filedialog.askopenfilename(title="Select File", filetypes=[("Text files, Pdf files", "*.txt *.pdf")])
@@ -91,6 +98,7 @@ def select_file_and_action(action):
             output_path = filedialog.askdirectory(title="Select Output Directory")
             convert_to_ppt(file_path, output_path)
 
+
 def select_multiple_files(action):
     file_paths = filedialog.askopenfilenames(title="Select Files", filetypes=[("Text files, Pdf files", "*.txt *.pdf")])
     if file_paths == None or file_paths == []:
@@ -98,12 +106,13 @@ def select_multiple_files(action):
     
     for file_path in file_paths:
         if action == "convert":
-            convert_file(file_path)
+            convert_txtfile_to_pdf(file_path)
 
     if action == "merge":
         if len(file_paths) <= 1:
             raise ValueError("Can't merge a single file, select more than one to continue!")
         merging_pdf(file_paths)
+
 
 def center_window(window, width, height):
     screen_width = window.winfo_screenwidth()
@@ -113,6 +122,7 @@ def center_window(window, width, height):
     y_coordinate = (screen_height / 2) - (height / 2)
 
     window.geometry(f"{width}x{height}+{int(x_coordinate)}+{int(y_coordinate)}")
+
 
 def main():
     root = tk.Tk()
@@ -143,6 +153,7 @@ def main():
     entry.pack()
 
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
