@@ -1,5 +1,3 @@
-Here's an improved version of the README file with some additional information and formatting improvements:
-
 # File Converter Tool
 
 This Python script provides a graphical user interface (GUI) for performing various operations on text and PDF files. It allows users to convert text files to PDF, split PDFs, merge PDFs, convert PDFs to images, and convert PDFs to PowerPoint presentations.
@@ -38,7 +36,7 @@ git clone https://github.com/your-username/file-converter-tool.git
 2. Navigate to the project directory.
 
 ```bash
-cd file-converter-tool
+cd PDF-Editor
 ```
 
 3. Install the required dependencies using pip.
