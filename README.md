@@ -1,4 +1,4 @@
-# File Converter Tool
+# PDF Editor
 
 This Python script provides a graphical user interface (GUI) for performing various operations on text and PDF files. It allows users to convert text files to PDF, split PDFs, merge PDFs, convert PDFs to images, and convert PDFs to PowerPoint presentations.
 
