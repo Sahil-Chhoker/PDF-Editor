@@ -53,6 +53,7 @@ pip install -r requirements.txt
 ```
 
 5. Set up environment variables for authentication with the GroupDocs API. Create a `.env` file in the root directory of the project and add your client ID and client secret. (For more information on getting your credentials, visit https://dashboard.groupdocs.cloud/)
+
    **NOTE**: You only need the API credentials ONLY if you are converting pdf to pptx, everything else works on your local machine.
 
 ```
