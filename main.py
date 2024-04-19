@@ -1,9 +1,18 @@
 import tkinter as tk
+import os
+import shutil
 from tkinter import filedialog
 from pathlib import Path
 from fpdf import FPDF
 from PyPDF2 import PdfReader, PdfWriter, PdfMerger
 from pdf2image import convert_from_path
+from dotenv import load_dotenv 
+import groupdocs_conversion_cloud
+
+load_dotenv()
+client_id = os.getenv('CLIENT_ID')
+client_secret = os.getenv('CLIENT_SECRET')
+
 
 def get_file_name(file_path):
     return Path(file_path).stem
@@ -39,7 +48,7 @@ def merging_pdf(file_paths):
     pdf_merger = PdfMerger()
     fname = ''
 
-    for i, file_path in enumerate(file_paths):
+    for file_path in file_paths:
         with open(file_path, 'rb') as pdf:
             pdf_merger.append(pdf)
             fname += get_file_name(file_path) + " + "
@@ -60,6 +69,15 @@ def convert_to_image(file_path, output_path):
 
     print(f'Images saved to {output_path}')
 
+def convert_to_ppt(file_path, output_path):
+    api = groupdocs_conversion_cloud.ConvertApi.from_keys(client_id, client_secret)
+
+    request = groupdocs_conversion_cloud.ConvertDocumentDirectRequest("pptx", file_path)
+
+    response = api.convert_document_direct(request)
+    shutil.move(response, output_path)
+    print(f'Converted PowerPoint saved to {output_path}')
+
 def select_file_and_action(action):
     file_path = filedialog.askopenfilename(title="Select File", filetypes=[("Text files, Pdf files", "*.txt *.pdf")])
     if file_path:
@@ -69,6 +87,9 @@ def select_file_and_action(action):
         elif action == "convert_to_image":
             output_path = filedialog.askdirectory(title="Select Output Directory")
             convert_to_image(file_path, output_path)
+        elif action == "convert_to_ppt":
+            output_path = filedialog.askdirectory(title="Select Output Directory")
+            convert_to_ppt(file_path, output_path)
 
 def select_multiple_files(action):
     file_paths = filedialog.askopenfilenames(title="Select Files", filetypes=[("Text files, Pdf files", "*.txt *.pdf")])
@@ -111,6 +132,9 @@ def main():
 
     convert_to_img_button = tk.Button(root, text="Convert PDF to Images", command=lambda: select_file_and_action("convert_to_image"))
     convert_to_img_button.pack(pady=10)
+
+    convert_to_ppt_button = tk.Button(root, text="Convert PDF to PowerPoint", command=lambda: select_file_and_action("convert_to_ppt"))
+    convert_to_ppt_button.pack(pady=10)
 
     global entry
     entry_label = tk.Label(root, text="Enter number of pages:")
