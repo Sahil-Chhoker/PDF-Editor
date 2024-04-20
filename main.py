@@ -14,6 +14,8 @@ load_dotenv()
 client_id = os.getenv('CLIENT_ID')
 client_secret = os.getenv('CLIENT_SECRET')
 
+poppler_path = 'your/poppler/path/to/bin'
+
 
 def get_file_name(file_path):
     return Path(file_path).stem
@@ -67,7 +69,6 @@ def merging_pdf(file_paths):
 
 def convert_to_image(file_path, output_path):
     fname = get_file_name(file_path)
-    poppler_path = 'C:/MASTER FOLDER/poppler-24.02.0/Library/bin'
     images = convert_from_path(file_path, poppler_path=poppler_path)
     for i, image in enumerate(images):
         image.save(f'{output_path}/{fname}_page_{i - 1}.jpg', 'JPEG')
