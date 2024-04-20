@@ -67,8 +67,8 @@ pip install -r requirements.txt
    - Once installed, note down the path to the `bin` directory of your Poppler installation.
 
 3. **Specify Poppler Path in the Script:**
-   - Open the `main.py` file in your PDF Editor project directory.
-   - Replace the placeholder `poppler_path` with the actual path to the `bin` directory of your Poppler installation.
+   - Open the `.env` file in your PDF Editor project directory.
+   - Replace the placeholder `your_poppler_path` with the actual path to the `bin` directory of your Poppler installation.
 
 
 6. Set up environment variables for authentication with the GroupDocs API. Create a `.env` file in the root directory of the project and add your client ID and client secret. (For more information on getting your credentials, visit [GroupDocs Dashboard](https://dashboard.groupdocs.cloud/))
@@ -78,6 +78,7 @@ pip install -r requirements.txt
 ```
 CLIENT_ID=your_client_id_here
 CLIENT_SECRET=your_client_secret_here
+POPPLER_PATH=your_poppler_path
 ```
 
 ## Usage
