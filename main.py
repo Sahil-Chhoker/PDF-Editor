@@ -21,7 +21,7 @@ def get_file_name(file_path):
     return Path(file_path).stem
 
 
-def convert_txtfile_to_pdf(file_path):
+def convert_txtfile_to_pdf(file_path, output_path):
     pdf = FPDF()
     pdf.add_page()
 
@@ -31,7 +31,7 @@ def convert_txtfile_to_pdf(file_path):
             pdf.set_font("Arial", size=10)
             pdf.multi_cell(w=0, h=10, txt=text, align="L")
         
-    pdf.output(f"{fname}.pdf")
+    pdf.output(f"{output_path}/{fname}.pdf")
 
 
 def splitting_pdf(file_path, page_no):
@@ -50,7 +50,7 @@ def splitting_pdf(file_path, page_no):
     print(f'Created: {output_filename}')
 
 
-def merging_pdf(file_paths):
+def merging_pdf(file_paths, output_path):
     pdf_merger = PdfMerger()
     fname = ''
 
@@ -59,7 +59,7 @@ def merging_pdf(file_paths):
             pdf_merger.append(pdf)
             fname += get_file_name(file_path) + " + "
 
-    output_filename = f"merged_{fname}.pdf"
+    output_filename = f"{output_path}/merged_{fname}.pdf"
 
     with open(output_filename, 'wb') as out:
         pdf_merger.write(out)
@@ -107,12 +107,14 @@ def select_multiple_files(action):
     
     for file_path in file_paths:
         if action == "convert":
-            convert_txtfile_to_pdf(file_path)
+            output_path = filedialog.askdirectory(title="Select Output Directory")
+            convert_txtfile_to_pdf(file_path, output_path)
 
     if action == "merge":
         if len(file_paths) <= 1:
             raise ValueError("Can't merge a single file, select more than one to continue!")
-        merging_pdf(file_paths)
+        output_path = filedialog.askdirectory(title="Select Output Directory")
+        merging_pdf(file_paths, output_path)
 
 
 def center_window(window, width, height):
