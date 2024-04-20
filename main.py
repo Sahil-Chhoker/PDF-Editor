@@ -165,6 +165,8 @@ def main():
     convert_to_ppt_button = tk.Button(root, text="Convert PDF to PowerPoint", command=lambda: select_file_and_action("convert_to_ppt"))
     convert_to_ppt_button.grid(row=1, column=3, pady=10)
 
+    center_window(root, 550, 100)
+
     root.mainloop()
 
 
