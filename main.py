@@ -34,13 +34,18 @@ def convert_txtfile_to_pdf(file_path, output_path):
     pdf.output(f"{output_path}/{fname}.pdf")
 
 
-def splitting_pdf(file_path, page_no):
+def splitting_pdf(file_path, page_no, trim_from_behind):
     fname = get_file_name(file_path)
     pdf = PdfReader(file_path)
+    no_of_pages = len(pdf.pages)
     
     pdf_writer = PdfWriter()
-    for i in range(page_no):
-        pdf_writer.add_page(pdf.pages[i])
+    if not trim_from_behind:
+        for i in range(page_no):
+            pdf_writer.add_page(pdf.pages[i])
+    else: 
+        for i in range(page_no):
+            pdf_writer.add_page(pdf.pages[no_of_pages - page_no + i])
         
     output_filename = f"{fname}_page_{page_no}.pdf"
 
@@ -91,7 +96,8 @@ def select_file_and_action(action):
     if file_path:
         if action == "split":
             page_no = int(entry.get())
-            splitting_pdf(file_path, page_no)
+            trim_from_behind = trim_var.get()
+            splitting_pdf(file_path, page_no, trim_from_behind)
         elif action == "convert_to_image":
             output_path = filedialog.askdirectory(title="Select Output Directory")
             convert_to_image(file_path, output_path)
@@ -132,28 +138,32 @@ def main():
     root.title("PDF Editor")
     root.resizable(False, False)  
 
-    center_window(root, 300, 300)
+    convert_button = tk.Button(root, text="Split PDF", command=lambda: select_file_and_action("split"))
+    convert_button.grid(row=0, column=0, pady=10)
 
-    convert_button = tk.Button(root, text="Convert Text to PDF", command=lambda: select_multiple_files("convert"))
-    convert_button.pack(pady=10)
-
-    split_button = tk.Button(root, text="Split PDF", command=lambda: select_file_and_action("split"))
-    split_button.pack(pady=10)
-
-    merge_button = tk.Button(root, text="Merge PDFs", command=lambda: select_multiple_files("merge"))
-    merge_button.pack(pady=10)
-
-    convert_to_img_button = tk.Button(root, text="Convert PDF to Images", command=lambda: select_file_and_action("convert_to_image"))
-    convert_to_img_button.pack(pady=10)
-
-    convert_to_ppt_button = tk.Button(root, text="Convert PDF to PowerPoint", command=lambda: select_file_and_action("convert_to_ppt"))
-    convert_to_ppt_button.pack(pady=10)
+    entry_label = tk.Label(root, text="Enter number of pages:")
+    entry_label.grid(row=0, column=1, pady=10)
 
     global entry
-    entry_label = tk.Label(root, text="Enter number of pages:")
-    entry_label.pack()
     entry = tk.Entry(root)
-    entry.pack()
+    entry.grid(row=0, column=2, pady=10)
+
+    global trim_var
+    trim_var = tk.BooleanVar()
+    trim_checkbox = tk.Checkbutton(root, text="Trim from behind", variable=trim_var)
+    trim_checkbox.grid(row=0, column=3, pady=10)
+
+    convert_button = tk.Button(root, text="Convert Text to PDF", command=lambda: select_multiple_files("convert"))
+    convert_button.grid(row=1, column=0, pady=10)
+
+    merge_button = tk.Button(root, text="Merge PDFs", command=lambda: select_multiple_files("merge"))
+    merge_button.grid(row=1, column=1, pady=10)
+
+    convert_to_img_button = tk.Button(root, text="Convert PDF to Images", command=lambda: select_file_and_action("convert_to_image"))
+    convert_to_img_button.grid(row=1, column=2, pady=10)
+
+    convert_to_ppt_button = tk.Button(root, text="Convert PDF to PowerPoint", command=lambda: select_file_and_action("convert_to_ppt"))
+    convert_to_ppt_button.grid(row=1, column=3, pady=10)
 
     root.mainloop()
 
