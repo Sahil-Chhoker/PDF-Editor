@@ -33,17 +33,17 @@ Ensure you have the following dependencies installed:
 git clone https://github.com/Sahil-Chhoker/PDF-Editor.git
 ```
 
-2. Create a virtual environment (optional but recommended).
+2. Navigate to the project directory.
+
+```bash
+cd PDF-Editor
+```
+
+3. Create a virtual environment (optional but recommended).
 
 ```bash
 python -m venv env
 source env/bin/activate  # On Windows, use `env\Scripts\activate.ps1`
-```
-
-3. Navigate to the project directory.
-
-```bash
-cd PDF-Editor
 ```
 
 4. Install the required dependencies using pip.
@@ -52,7 +52,26 @@ cd PDF-Editor
 pip install -r requirements.txt
 ```
 
-5. Set up environment variables for authentication with the GroupDocs API. Create a `.env` file in the root directory of the project and add your client ID and client secret. (For more information on getting your credentials, visit https://dashboard.groupdocs.cloud/)
+### Installing Poppler
+**NOTE**: You ONLY need popler if you are converting your pdf to images, the rest works okay.
+
+1.
+   **For Windows Users:**
+   - Go to the [Poppler Windows Releases](https://github.com/oschwartz10612/poppler-windows/releases) page.
+   - Download and install the latest release of Poppler for Windows.
+   - Once installed, locate the path to the `bin` directory of your Poppler installation.
+     
+   **For Mac and Linux Users:**
+   - Visit the [Poppler Official Website](https://poppler.freedesktop.org/).
+   - Download and install the latest release of Poppler for your OS.
+   - Once installed, note down the path to the `bin` directory of your Poppler installation.
+
+3. **Specify Poppler Path in the Script:**
+   - Open the `main.py` file in your PDF Editor project directory.
+   - Replace the placeholder `poppler_path` with the actual path to the `bin` directory of your Poppler installation.
+
+
+6. Set up environment variables for authentication with the GroupDocs API. Create a `.env` file in the root directory of the project and add your client ID and client secret. (For more information on getting your credentials, visit [GroupDocs Dashboard](https://dashboard.groupdocs.cloud/))
 
    **NOTE**: You only need the API credentials ONLY if you are converting pdf to pptx, everything else works on your local machine.
 
@@ -61,65 +80,11 @@ CLIENT_ID=your_client_id_here
 CLIENT_SECRET=your_client_secret_here
 ```
 
-### Python Not Installed?
-If someone doesn't have Python installed, they'll need to install it before they can run the script. Here are instructions for installing Python:
-
-#### Installing Python
-
-1. **Windows:**
-   - Visit the official Python website: [python.org](https://www.python.org/downloads/).
-   - Download the latest version of Python for Windows.
-   - Run the downloaded installer.
-   - During installation, make sure to check the box that says "Add Python to PATH" to easily run Python from the command line.
-   - Follow the installation prompts, and Python will be installed on your system.
-
-2. **macOS:**
-   - macOS typically comes with Python pre-installed. However, it's recommended to install the latest version using the following steps:
-     - Install Homebrew if you haven't already. Open Terminal and run:
-       ```bash
-       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-       ```
-     - Once Homebrew is installed, install Python by running:
-       ```bash
-       brew install python
-       ```
-
-3. **Linux:**
-   - Python is often pre-installed on Linux distributions. If not, you can install it using your package manager. For example:
-     - On Debian/Ubuntu:
-       ```bash
-       sudo apt update
-       sudo apt install python3
-       ```
-     - On Fedora:
-       ```bash
-       sudo dnf install python3
-       ```
-
-#### Verifying Python Installation
-
-After installing Python, you can verify the installation by opening a terminal/command prompt and running:
-
-```bash
-python --version
-```
-
-or
-
-```bash
-python3 --version
-```
-
-This should display the installed Python version.
-
-Once Python is installed, follow the setup instructions provided for the PDF Editor script. If you encounter any issues during installation or setup, feel free to ask for assistance!
-
 ## Usage
 
-1. Run the script by executing `python main.py` in your terminal.
-2. The GUI window will open, allowing you to perform various file conversion operations.
-3. Click on the desired operation button to perform the corresponding action.
-4. Follow the on-screen instructions to select input files and output directories.
+1. Run `python main.py` in your terminal.
+2. Click on an operation button to start.
+3. Follow on-screen prompts to select files and folders.
 
 ## Contributing
 
