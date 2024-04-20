@@ -14,7 +14,7 @@ load_dotenv()
 client_id = os.getenv('CLIENT_ID')
 client_secret = os.getenv('CLIENT_SECRET')
 
-poppler_path = 'your/poppler/path/to/bin'
+poppler_path = os.getenv('POPPLER_PATH')
 
 
 def get_file_name(file_path):
