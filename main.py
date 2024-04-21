@@ -1,5 +1,6 @@
 import tkinter as tk
 import os
+import img2pdf
 import shutil
 from tkinter import filedialog
 from pathlib import Path
@@ -91,6 +92,24 @@ def convert_to_ppt(file_path, output_path):
     print(f'Converted PowerPoint saved to {output_path}')
 
 
+def convert_img_files_to_pdf(file_paths, output_path):
+    image_data = []
+    fname = ''
+
+    for file_path in file_paths:
+        with open(file_path, 'rb') as img_file:
+            image_data.append(img_file.read())
+            fname += get_file_name(file_path) + " + "
+    
+    pdf_data = img2pdf.convert(image_data)
+
+    output_file = f'{output_path}/img_to_pdf_{fname}.pdf'
+    with open(output_file, "wb") as file:
+        file.write(pdf_data)
+
+    print(f'Images converted and saved as PDF to: {output_path}')
+
+
 def select_file_and_action(action):
     file_path = filedialog.askopenfilename(title="Select File", filetypes=[("Text files, Pdf files", "*.txt *.pdf")])
     if file_path:
@@ -107,20 +126,22 @@ def select_file_and_action(action):
 
 
 def select_multiple_files(action):
-    file_paths = filedialog.askopenfilenames(title="Select Files", filetypes=[("Text files, Pdf files", "*.txt *.pdf")])
+    file_paths = filedialog.askopenfilenames(title="Select Files", filetypes=[("Text files, Pdf files, Image files", "*.txt *.pdf *.jpg *.jpeg *.png")])
     if file_paths == None or file_paths == []:
         raise ImportError("Files were not imported, try again!")
     
-    for file_path in file_paths:
-        if action == "convert":
+    if action == "convert":
+        for file_path in file_paths:
             output_path = filedialog.askdirectory(title="Select Output Directory")
             convert_txtfile_to_pdf(file_path, output_path)
-
-    if action == "merge":
+    elif action == "merge":
         if len(file_paths) <= 1:
             raise ValueError("Can't merge a single file, select more than one to continue!")
         output_path = filedialog.askdirectory(title="Select Output Directory")
         merging_pdf(file_paths, output_path)
+    elif action == "convert_img_to_pdf":
+        output_path = filedialog.askdirectory(title="Select Output Directory")
+        convert_img_files_to_pdf(file_paths, output_path)
 
 
 def center_window(window, width, height):
@@ -165,7 +186,10 @@ def main():
     convert_to_ppt_button = tk.Button(root, text="Convert PDF to PowerPoint", command=lambda: select_file_and_action("convert_to_ppt"))
     convert_to_ppt_button.grid(row=1, column=3, pady=10)
 
-    center_window(root, 550, 100)
+    convert_img_to_pdf_button = tk.Button(root, text="Convert Images to PDF", command=lambda: select_multiple_files("convert_img_to_pdf"))
+    convert_img_to_pdf_button.grid(row=2, column=0, columnspan=4, pady=10)
+
+    center_window(root, 550, 150)
 
     root.mainloop()
 
