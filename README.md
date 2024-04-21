@@ -5,6 +5,7 @@ This Python script provides a graphical user interface (GUI) for performing vari
 ## Features
 
 - Convert text files to PDF format
+- Convert Image files to PDF format
 - Split PDF files into multiple PDFs
 - Merge multiple PDF files into a single PDF
 - Convert PDF files to image format (PNG, JPG, etc.)
@@ -24,6 +25,7 @@ Ensure you have the following dependencies installed:
 - **pdf2image**: A Python library to convert PDFs to images.
 - **dotenv**: A Python library to manage environment variables.
 - **groupdocs_conversion_cloud**: A Python library for converting documents, powered by GroupDocs.
+- **img2pdf**: A Python library for converting images into PDF files.
 
 ## Setup
 
