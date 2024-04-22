@@ -1,8 +1,8 @@
 import tkinter as tk
-import os
+import os, random
 import img2pdf
 import shutil
-from tkinter import filedialog
+from tkinter import filedialog, ttk
 from pathlib import Path
 from fpdf import FPDF
 from PyPDF2 import PdfReader, PdfWriter, PdfMerger
@@ -17,19 +17,24 @@ client_secret = os.getenv('CLIENT_SECRET')
 
 poppler_path = os.getenv('POPPLER_PATH')
 
+font_family = ["Courier", "Arial", "Times", "Symbol", "ZapfDingbats"]
+
 
 def get_file_name(file_path):
     return Path(file_path).stem
 
+def random_file_no():
+    return random.randint(0, 1000)
 
-def convert_txtfile_to_pdf(file_path, output_path):
+
+def convert_txtfile_to_pdf(file_path, output_path, selected_font):
     pdf = FPDF()
     pdf.add_page()
-
+    pdf.set_font(selected_font, size=10)
+    
     fname = get_file_name(file_path)
     with open(file_path, 'r') as file:
         for text in file:
-            pdf.set_font("Arial", size=10)
             pdf.multi_cell(w=0, h=10, txt=text, align="L")
         
     pdf.output(f"{output_path}/{fname}.pdf")
@@ -58,14 +63,13 @@ def splitting_pdf(file_path, page_no, trim_from_behind):
 
 def merging_pdf(file_paths, output_path):
     pdf_merger = PdfMerger()
-    fname = ''
+    fname = random_file_no()
 
     for file_path in file_paths:
         with open(file_path, 'rb') as pdf:
             pdf_merger.append(pdf)
-            fname += get_file_name(file_path) + " + "
 
-    output_filename = f"{output_path}/merged_{fname}.pdf"
+    output_filename = f"{output_path}/merged_file{fname}.pdf"
 
     with open(output_filename, 'wb') as out:
         pdf_merger.write(out)
@@ -77,7 +81,7 @@ def convert_to_image(file_path, output_path):
     fname = get_file_name(file_path)
     images = convert_from_path(file_path, poppler_path=poppler_path)
     for i, image in enumerate(images):
-        image.save(f'{output_path}/{fname}_page_{i - 1}.jpg', 'JPEG')
+        image.save(f'{output_path}/{fname}_page_{i + 1}.jpg', 'JPEG')
 
     print(f'Images saved to {output_path}')
 
@@ -94,16 +98,15 @@ def convert_to_ppt(file_path, output_path):
 
 def convert_img_files_to_pdf(file_paths, output_path):
     image_data = []
-    fname = ''
+    fname = random_file_no()
 
     for file_path in file_paths:
         with open(file_path, 'rb') as img_file:
             image_data.append(img_file.read())
-            fname += get_file_name(file_path) + " + "
     
     pdf_data = img2pdf.convert(image_data)
 
-    output_file = f'{output_path}/img_to_pdf_{fname}.pdf'
+    output_file = f'{output_path}/img_to_pdf{fname}.pdf'
     with open(output_file, "wb") as file:
         file.write(pdf_data)
 
@@ -132,8 +135,9 @@ def select_multiple_files(action):
     
     if action == "convert":
         for file_path in file_paths:
+            selected_font = font_combobox.get()
             output_path = filedialog.askdirectory(title="Select Output Directory")
-            convert_txtfile_to_pdf(file_path, output_path)
+            convert_txtfile_to_pdf(file_path, output_path, selected_font)
     elif action == "merge":
         if len(file_paths) <= 1:
             raise ValueError("Can't merge a single file, select more than one to continue!")
@@ -157,40 +161,82 @@ def center_window(window, width, height):
 def main():
     root = tk.Tk()
     root.title("PDF Editor")
-    root.resizable(False, False)  
+    root.resizable(False, False)
 
-    convert_button = tk.Button(root, text="Split PDF", command=lambda: select_file_and_action("split"))
-    convert_button.grid(row=0, column=0, pady=10)
+    main_frame = tk.Frame(root, padx=20, pady=20)
+    main_frame.pack(fill='both', expand=True)
 
-    entry_label = tk.Label(root, text="Enter number of pages:")
-    entry_label.grid(row=0, column=1, pady=10)
+    notebook = ttk.Notebook(main_frame)
+    notebook.pack(fill='both', expand=True)
+
+    # Split PDF tab
+    split_frame = tk.Frame(notebook)
+    notebook.add(split_frame, text='Split PDF')
+
+    split_label = tk.Label(split_frame, text="Split PDF", font=("Arial", 16, "bold"))
+    split_label.pack(pady=10)
+
+    split_button = tk.Button(split_frame, text="Split PDF", command=lambda: select_file_and_action("split"))
+    split_button.pack(pady=5)
+
+    entry_label = tk.Label(split_frame, text="Enter no. of pages:")
+    entry_label.pack(pady=5)
 
     global entry
-    entry = tk.Entry(root)
-    entry.grid(row=0, column=2, pady=10)
+    entry = tk.Entry(split_frame)
+    entry.pack(pady=5)
 
     global trim_var
     trim_var = tk.BooleanVar()
-    trim_checkbox = tk.Checkbutton(root, text="Trim from behind", variable=trim_var)
-    trim_checkbox.grid(row=0, column=3, pady=10)
 
-    convert_button = tk.Button(root, text="Convert Text to PDF", command=lambda: select_multiple_files("convert"))
-    convert_button.grid(row=1, column=0, pady=10)
+    trim_checkbox = tk.Checkbutton(split_frame, text="Trim from behind", variable=trim_var)
+    trim_checkbox.pack(pady=5)
 
-    merge_button = tk.Button(root, text="Merge PDFs", command=lambda: select_multiple_files("merge"))
-    merge_button.grid(row=1, column=1, pady=10)
+    # Convert Text to PDF tab
+    convert_frame = tk.Frame(notebook)
+    notebook.add(convert_frame, text='Convert Text to PDF')
 
-    convert_to_img_button = tk.Button(root, text="Convert PDF to Images", command=lambda: select_file_and_action("convert_to_image"))
-    convert_to_img_button.grid(row=1, column=2, pady=10)
+    convert_label = tk.Label(convert_frame, text="Convert Text to PDF", font=("Arial", 16, "bold"))
+    convert_label.pack(pady=10)
 
-    convert_to_ppt_button = tk.Button(root, text="Convert PDF to PowerPoint", command=lambda: select_file_and_action("convert_to_ppt"))
-    convert_to_ppt_button.grid(row=1, column=3, pady=10)
+    convert_button = tk.Button(convert_frame, text="Convert Text to PDF", command=lambda: select_multiple_files("convert"))
+    convert_button.pack(pady=5)
 
-    convert_img_to_pdf_button = tk.Button(root, text="Convert Images to PDF", command=lambda: select_multiple_files("convert_img_to_pdf"))
-    convert_img_to_pdf_button.grid(row=2, column=0, columnspan=4, pady=10)
+    text_style_label = tk.Label(convert_frame, text="Text Style:")
+    text_style_label.pack(pady=5)
 
-    center_window(root, 550, 150)
+    global font_combobox
+    font_combobox = ttk.Combobox(convert_frame, values=font_family, state="readonly")
+    font_combobox.current(0)
+    font_combobox.pack(pady=5)
 
+    merge_frame = tk.Frame(notebook)
+    notebook.add(merge_frame, text='Merge PDFs')
+
+    merge_label = tk.Label(merge_frame, text="Merge PDFs", font=("Arial", 16, "bold"))
+    merge_label.pack(pady=10)
+
+    merge_button = tk.Button(merge_frame, text="Merge PDFs", command=lambda: select_multiple_files("merge"))
+    merge_button.pack(pady=10)
+
+    # Other Formats tab
+    other_formats_frame = tk.Frame(notebook)
+    notebook.add(other_formats_frame, text='Convert PDF to Other Formats')
+
+    convert_to_img_button = tk.Button(other_formats_frame, text="Convert PDF to Images", command=lambda: select_file_and_action("convert_to_image"))
+    convert_to_img_button.pack(pady=5)
+
+    convert_to_ppt_button = tk.Button(other_formats_frame, text="Convert PDF to PPT", command=lambda: select_file_and_action("convert_to_ppt"))
+    convert_to_ppt_button.pack(pady=5)
+
+    convert_img_to_pdf_button = tk.Button(other_formats_frame, text="Convert Images to PDF", command=lambda: select_multiple_files("convert_img_to_pdf"))
+    convert_img_to_pdf_button.pack(pady=5)
+
+    # Status bar
+    status_bar = tk.Label(root, text="Ready", bd=1, relief=tk.SUNKEN, anchor=tk.W)
+    status_bar.pack(side=tk.BOTTOM, fill=tk.X)
+
+    center_window(root, 600, 600)
     root.mainloop()
 
 
