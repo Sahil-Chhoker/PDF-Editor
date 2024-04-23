@@ -99,6 +99,16 @@ def convert_to_ppt(file_path, output_path):
    print(f'Converted PowerPoint saved to {output_path}')
 
 
+def convert_ppt_to_pdf(file_path, output_path):
+   api = groupdocs_conversion_cloud.ConvertApi.from_keys(client_id, client_secret)
+
+   request = groupdocs_conversion_cloud.ConvertDocumentDirectRequest("pdf", file_path)
+
+   response = api.convert_document_direct(request)
+   shutil.move(response, output_path)
+   print(f'Converted pdf saved to {output_path}')
+
+
 def convert_img_files_to_pdf(file_paths, output_path):
    image_data = []
    fname = random_file_no()
@@ -117,18 +127,21 @@ def convert_img_files_to_pdf(file_paths, output_path):
 
 
 def select_file_and_action(action):
-   file_path = filedialog.askopenfilename(title="Select File", filetypes=[("Text files, Pdf files", "*.txt *.pdf")])
+   file_path = filedialog.askopenfilename(title="Select File", filetypes=[("Text files, Pdf files, Pptx", "*.txt *.pdf *pptx")])
    if file_path:
-       if action == "split":
-           page_no = int(entry.get())
-           trim_from_behind = trim_var.get()
-           splitting_pdf(file_path, page_no, trim_from_behind)
-       elif action == "convert_to_image":
-           output_path = filedialog.askdirectory(title="Select Output Directory")
-           convert_to_image(file_path, output_path)
-       elif action == "convert_to_ppt":
+        if action == "split":
+            page_no = int(entry.get())
+            trim_from_behind = trim_var.get()
+            splitting_pdf(file_path, page_no, trim_from_behind)
+        elif action == "convert_to_image":
+            output_path = filedialog.askdirectory(title="Select Output Directory")
+            convert_to_image(file_path, output_path)
+        elif action == "convert_to_ppt":
            output_path = filedialog.askdirectory(title="Select Output Directory")
            convert_to_ppt(file_path, output_path)
+        elif action == "convert_ppt_to_pdf":
+            output_path = filedialog.askdirectory(title="Select Output Directory")
+            convert_ppt_to_pdf(file_path, output_path)
 
 
 def select_multiple_files(action):
@@ -240,6 +253,9 @@ def main():
 
     convert_img_to_pdf_button = tk.Button(other_formats_frame, text="Convert Images to PDF", command=lambda: select_multiple_files("convert_img_to_pdf"))
     convert_img_to_pdf_button.pack(pady=5)
+
+    convert_ppt_to_pdf_button = tk.Button(other_formats_frame, text="Convert PPT to PDF", command=lambda: select_file_and_action("convert_ppt_to_pdf"))
+    convert_ppt_to_pdf_button.pack(pady=5)
 
     # Status bar
     status_bar = tk.Label(root, text="Ready", bd=1, relief=tk.SUNKEN, anchor=tk.W)
